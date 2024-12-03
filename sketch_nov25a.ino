@@ -1,7 +1,7 @@
 #include <Servo.h>
 #include <SoftwareSerial.h>
 
-SoftwareSerial ble(10, 11); 
+SoftwareSerial ble(10, 11);
 
 Servo myservo;
 int Left = 200;
@@ -22,7 +22,6 @@ char data;
 bool isAuto = false; 
 bool isStarted = false; 
 
-
 int Distance() {
   digitalWrite(Trig, LOW);
   delayMicroseconds(2);
@@ -35,7 +34,8 @@ int Distance() {
 }
 
 void setup() {
-  ble.begin(9600); 
+  Serial.begin(9600);
+  ble.begin(9600);
   myservo.attach(3);
   myservo.write(90);
   pinMode(Trig, OUTPUT);
@@ -55,14 +55,16 @@ void loop() {
     data = ble.read();
 
     if (data == 'start') { 
-      isStarted = true;
-      isAuto = false;
+      if (isStarted) { 
+        isStarted = false;
+        Dung();
+      } else { 
+        isStarted = true;
+        isAuto = false;
+      }
     } else if (data == 'auto') { 
       isStarted = true;
       isAuto = true;
-    } else if (data == 'off') { 
-      isStarted = false;
-      Dung();
     } else if (!isAuto && isStarted) {
       ManualControl(data);
     }
@@ -71,7 +73,6 @@ void loop() {
     AutoMode();
   }
 }
-
 
 void ManualControl(char command) {
   switch (command) {
@@ -82,10 +83,10 @@ void ManualControl(char command) {
       DiLui(0); 
       break;
     case 'left': 
-      LuiTrai(0); 
+      ReTrai(0); 
       break;
     case 'right': 
-      LuiPhai(0); 
+      RePhai(0); 
       break;
     case 'stop': 
       Dung();
@@ -93,7 +94,6 @@ void ManualControl(char command) {
   }
 }
 
-h
 void AutoMode() {
   myservo.write(90);
   while (LT_M == 0 && (LT_L == 0 || LT_R == 0)) {
@@ -105,7 +105,6 @@ void AutoMode() {
   }
   Dung();
 }
-
 
 void DiThang() {
   analogWrite(ENA, 150);
@@ -131,22 +130,25 @@ void DiLui(int time) {
   delay(time);
 }
 
-void LuiTrai(int time) {
-  analogWrite(ENA, 200);
-  analogWrite(ENB, 200);
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  delay(time);
+void ReTrai(int time) { 
+  analogWrite(ENA, 150); 
+  analogWrite(ENB, 150); 
+  digitalWrite(IN1, LOW); 
+  digitalWrite(IN2, HIGH); 
+  digitalWrite(IN3, HIGH); 
+  digitalWrite(IN4, LOW); 
+  delay(time); 
 }
 
-void LuiPhai(int time) {
-  analogWrite(ENA, 200);
-  analogWrite(ENB, 200);
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);
-  delay(time);
+void RePhai(int time) { 
+  analogWrite(ENA, 150); 
+  analogWrite(ENB, 150); 
+  digitalWrite(IN1, HIGH); 
+  digitalWrite(IN2, LOW); 
+  digitalWrite(IN3, LOW); 
+  digitalWrite(IN4, HIGH); 
+  delay(time); 
 }
-
 
 void NeVatCan() {
   while (true) {
@@ -158,11 +160,11 @@ void NeVatCan() {
     delay(1000);
     Left = Distance();
     if (Left > Right) {
-      LuiTrai(450);
+      ReTrai(450); 
       myservo.write(90);
       break;
     } else if (Right >= Left) {
-      LuiPhai(450);
+      RePhai(450); 
       myservo.write(90);
       break;
     }
