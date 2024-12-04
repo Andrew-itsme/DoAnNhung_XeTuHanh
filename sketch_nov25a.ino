@@ -54,7 +54,7 @@ void loop() {
   if (ble.available() > 0) {
     data = ble.read();
 
-    if (data == 'start') { 
+    if (data == '5') { 
       if (isStarted) { 
         isStarted = false;
         Dung();
@@ -62,7 +62,7 @@ void loop() {
         isStarted = true;
         isAuto = false;
       }
-    } else if (data == 'auto') { 
+    } else if (data == '66') { 
       isStarted = true;
       isAuto = true;
     } else if (!isAuto && isStarted) {
@@ -76,16 +76,16 @@ void loop() {
 
 void ManualControl(char command) {
   switch (command) {
-    case 'go': 
+    case '1': 
       DiThang();
       break;
-    case 'back': 
+    case '2': 
       DiLui(0); 
       break;
-    case 'left': 
+    case '3': 
       ReTrai(0); 
       break;
-    case 'right': 
+    case '4': 
       RePhai(0); 
       break;
     case 'stop': 
