@@ -62,7 +62,7 @@ void loop() {
         isStarted = true;
         isAuto = false;
       }
-    } else if (data == '66') { 
+    } else if (data == '6') { 
       isStarted = true;
       isAuto = true;
     } else if (!isAuto && isStarted) {
