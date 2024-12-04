@@ -1,7 +1,4 @@
 #include <Servo.h>
-#include <SoftwareSerial.h>
-
-SoftwareSerial ble(10, 11);
 
 Servo myservo;
 int Left = 200;
@@ -14,13 +11,10 @@ int IN1 = 7;
 int IN2 = 8;
 int IN3 = 9;
 int IN4 = 11;
-#define LT_R !digitalRead(10)
-#define LT_M !digitalRead(4)
-#define LT_L !digitalRead(2)
 
-char data;        
-bool isAuto = false; 
-bool isStarted = false; 
+char data;
+bool isAuto = false;
+bool isStarted = false;
 
 int Distance() {
   digitalWrite(Trig, LOW);
@@ -35,9 +29,10 @@ int Distance() {
 
 void setup() {
   Serial.begin(9600);
-  ble.begin(9600);
+
   myservo.attach(3);
   myservo.write(90);
+
   pinMode(Trig, OUTPUT);
   pinMode(Echo, INPUT);
   pinMode(ENA, OUTPUT);
@@ -51,8 +46,8 @@ void setup() {
 }
 
 void loop() {
-  if (ble.available() > 0) {
-    data = ble.read();
+  if (Serial.available() > 0) {
+    data = Serial.read();
 
     if (data == '5') { 
       if (isStarted) { 
@@ -69,6 +64,7 @@ void loop() {
       ManualControl(data);
     }
   }
+
   if (isStarted && isAuto) {
     AutoMode();
   }
@@ -77,30 +73,30 @@ void loop() {
 void ManualControl(char command) {
   switch (command) {
     case '1': 
-      DiThang();
+      DiThang();  
       break;
     case '2': 
-      DiLui(0); 
+      DiLui(0);  
       break;
     case '3': 
-      ReTrai(0); 
+      ReTrai(0);  
       break;
     case '4': 
-      RePhai(0); 
+      RePhai(0);  
       break;
     case 'stop': 
-      Dung();
+      Dung();  
       break;
   }
 }
 
 void AutoMode() {
-  myservo.write(90);
+  myservo.write(90);  
   while (LT_M == 0 && (LT_L == 0 || LT_R == 0)) {
     if (Distance() < 30)
-      NeVatCan();
+      NeVatCan();  
     else
-      DiThang();
+      DiThang();  
     Do();
   }
   Dung();
