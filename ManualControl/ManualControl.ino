@@ -73,9 +73,6 @@ void ManualControl(char command) {
     case '4': 
       RePhai(0); 
       break;
-    case 'stop': 
-      Dung();
-      break;
   }
 }
 
